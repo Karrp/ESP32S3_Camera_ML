@@ -1,4 +1,16 @@
 dependencies:
+  espressif/esp-nn:
+    component_hash: b32869798bdb40dec6bc99caca48cd65d42f8a9f506b9ab9c598a076f891ede9
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.0.2
+  espressif/esp-tflite-micro:
+    component_hash: ffe40b7edc5f407f82a55047b7269c036c25106ff830fb9b3231f3b7fecb4915
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.2.0
   espressif/esp32-camera:
     component_hash: 53dbe0900ca98c0ad91a83491297f7d60c776c6dbc34c79b5ae536562818fd52
     source:
@@ -10,6 +22,6 @@ dependencies:
     source:
       type: idf
     version: 5.2.0
-manifest_hash: 35d907e52c69d559c23a7a4e96a8bca21fe8064aa71f9a5366e9220243dcefa3
+manifest_hash: 9348758208a13db5436ff4099734f97583fca1212373e584fbece3889d694082
 target: esp32s3
 version: 1.0.0
