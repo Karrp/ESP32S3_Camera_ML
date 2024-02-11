@@ -28,7 +28,7 @@ extern "C"{
 #ifdef BOARD_ESP_S3_EYE
 // #define CAMERA_MODULE_NAME "ESP-S3-EYE"
     #define CAM_PIN_PWDN -1
-    #define CAM_PIN_RESET -1
+    #define CAM_PIN_RESET 14    //-1
 
     #define CAM_PIN_VSYNC 6
     #define CAM_PIN_HREF 7
