@@ -257,11 +257,47 @@ void wifi_init_softap(void)
 }
 */
 
+// ---------------- SENSD IMAGE TO PC ---------------
+#include <stdio.h>
+#include "esp_log.h"
+
+// Function to send image data over serial port
+void send_image_data(uint8_t *image_data, size_t image_size) {
+    vTaskDelay(100 / portTICK_RATE_MS);
+    for (size_t i = 0; i < image_size; i++) {
+        putchar(image_data[i]); // Send each byte of image data over serial
+        vTaskDelay(10 / portTICK_RATE_MS);
+    }
+}
+
+#include "driver/uart.h"
+
+void send_uart_setup(void) {
+    const uart_port_t uart_picture = UART_NUM_2;
+    uart_config_t uart_config = {
+            .baud_rate = 115200,
+            .data_bits = UART_DATA_8_BITS,
+            .parity = UART_PARITY_DISABLE,
+            .stop_bits = UART_STOP_BITS_1,
+            .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+        };
+
+    uart_param_config(uart_picture, &uart_config);
+    uart_set_pin(uart_picture, GPIO_NUM_2, GPIO_NUM_1, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    uart_driver_install(uart_picture, 256, 0, 0, NULL, 0);
+}
 // ---------------- MAIN ------------------
 
 
 void app_main(void)
 {
+    #define BUTTON_GPIO GPIO_NUM_0
+
+    gpio_set_direction(BUTTON_GPIO, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(BUTTON_GPIO, GPIO_PULLUP_ONLY);
+
+    send_uart_setup();
+
 #if ESP_CAMERA_SUPPORTED
     if(ESP_OK != init_camera()) {
         return;
@@ -293,8 +329,15 @@ void app_main(void)
             ESP_LOGI(photo_TAG, "Picture problem, no image processing");
         }
         else
-        {
-            // process_image(pic);
+        {   
+            if(!gpio_get_level(BUTTON_GPIO))
+            {
+                // process_image(pic);
+                ESP_LOGI(photo_TAG, "Picture sending by serialport START");
+                // send_image_data(pic->buf, pic->len);
+                uart_write_bytes(UART_NUM_2, (const char *)pic->buf, pic->len);
+                ESP_LOGI(photo_TAG, "Picture sending by serialport STOP");
+            }
         }
 
         esp_camera_fb_return(pic); // Release data space
@@ -306,4 +349,14 @@ void app_main(void)
     return;
 #endif
 }
-}
+
+} // extern "C"
+
+/*TODO
+import pictures from camera
+put it to python library again
+tune it for my camera input
+
+show results on the presentation
+before next term of exam
+*/
