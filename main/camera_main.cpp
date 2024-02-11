@@ -331,25 +331,26 @@ void app_main(void)
         {   
             if(!gpio_get_level(BUTTON_GPIO))
             {
-                #define BUFFER_SIZE 76800
-                uint8_t *buffer = (uint8_t *)calloc(BUFFER_SIZE, sizeof(uint8_t));
-                if (buffer == NULL){
-                    printf("Memory allocation failed\n");
-                }
-                else{
-                    for (size_t i = 0; i < BUFFER_SIZE; ++i) {
-                        buffer[i] = i % 8 == 0 ? 0 : 255;
-                    }
-                }
+                // Buffer for test sending
+                // #define BUFFER_SIZE 76800
+                // uint8_t *buffer = (uint8_t *)calloc(BUFFER_SIZE, sizeof(uint8_t));
+                // if (buffer == NULL){
+                //     printf("Memory allocation failed\n");
+                // }
+                // else{
+                //     for (size_t i = 0; i < BUFFER_SIZE; ++i) {
+                //         buffer[i] = i % 8 == 0 ? 0 : 255;
+                //     }
+                // }
 
                 // process_image(pic);
                 ESP_LOGI(photo_TAG, "Picture sending by serialport START");
                 // send_image_data(pic->buf, pic->len);
-                // uart_write_bytes(UART_NUM_2, (const char *)pic->buf, pic->len);
-                uart_write_bytes(UART_NUM_2, (const char *)buffer, pic->len);
+                uart_write_bytes(UART_NUM_2, (const char *)pic->buf, pic->len);
+                // uart_write_bytes(UART_NUM_2, (const char *)buffer, pic->len);
                 ESP_LOGI(photo_TAG, "Picture sending by serialport STOP");
 
-                free(buffer);
+                // free(buffer);
             }
         }
 
