@@ -259,16 +259,15 @@ void wifi_init_softap(void)
 
 // ---------------- SENSD IMAGE TO PC ---------------
 #include <stdio.h>
-#include "esp_log.h"
 
-// Function to send image data over serial port
-void send_image_data(uint8_t *image_data, size_t image_size) {
-    vTaskDelay(100 / portTICK_RATE_MS);
-    for (size_t i = 0; i < image_size; i++) {
-        putchar(image_data[i]); // Send each byte of image data over serial
-        vTaskDelay(10 / portTICK_RATE_MS);
-    }
-}
+// // Function to send image data over serial port
+// void send_image_data(uint8_t *image_data, size_t image_size) {
+//     vTaskDelay(100 / portTICK_RATE_MS);
+//     for (size_t i = 0; i < image_size; i++) {
+//         putchar(image_data[i]); // Send each byte of image data over serial
+//         vTaskDelay(10 / portTICK_RATE_MS);
+//     }
+// }
 
 #include "driver/uart.h"
 
@@ -332,15 +331,30 @@ void app_main(void)
         {   
             if(!gpio_get_level(BUTTON_GPIO))
             {
+                #define BUFFER_SIZE 76800
+                uint8_t *buffer = (uint8_t *)calloc(BUFFER_SIZE, sizeof(uint8_t));
+                if (buffer == NULL){
+                    printf("Memory allocation failed\n");
+                }
+                else{
+                    for (size_t i = 0; i < BUFFER_SIZE; ++i) {
+                        buffer[i] = i % 8 == 0 ? 0 : 255;
+                    }
+                }
+
                 // process_image(pic);
                 ESP_LOGI(photo_TAG, "Picture sending by serialport START");
                 // send_image_data(pic->buf, pic->len);
-                uart_write_bytes(UART_NUM_2, (const char *)pic->buf, pic->len);
+                // uart_write_bytes(UART_NUM_2, (const char *)pic->buf, pic->len);
+                uart_write_bytes(UART_NUM_2, (const char *)buffer, pic->len);
                 ESP_LOGI(photo_TAG, "Picture sending by serialport STOP");
+
+                free(buffer);
             }
         }
 
         esp_camera_fb_return(pic); // Release data space
+        
 
         vTaskDelay(10000 / portTICK_RATE_MS);
     }
