@@ -81,7 +81,7 @@ static const char *wifi_TAG = "WiFi handler:";
         .pixel_format = PIXFORMAT_GRAYSCALE, //YUV422,GRAYSCALE,RGB565,JPEG
         .frame_size = FRAMESIZE_QVGA,    //QQVGA-UXGA, For ESP32, do not use sizes above QVGA when not JPEG. The performance of the ESP32-S series has improved a lot, but JPEG mode always gives better frame rates.
 
-        .jpeg_quality = 63, //0-63, for OV series camera sensors, lower number means higher quality
+        .jpeg_quality = 16, //0-63, for OV series camera sensors, lower number means higher quality
         .fb_count = 1,       //When jpeg mode is used, if fb_count more than one, the driver will work in continuous mode.
         .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
     };
